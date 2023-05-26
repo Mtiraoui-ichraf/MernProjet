@@ -1,8 +1,8 @@
 const UserModel = require("../models/user.model");
 const fs = require("fs");
 const { promisify } = require("util");
-const { uploadErrors } = require("../utils/errors.utils");
 const pipeline = promisify(require("stream").pipeline);
+const { uploadErrors } = require("../utils/errors.utils");
 
 module.exports.uploadProfil = async (req, res) => {
   try {
@@ -10,8 +10,9 @@ module.exports.uploadProfil = async (req, res) => {
       req.file.detectedMimeType != "image/jpg" &&
       req.file.detectedMimeType != "image/png" &&
       req.file.detectedMimeType != "image/jpeg"
-    )
+      )
       throw Error("invalid file");
+      
 
     if (req.file.size > 500000) throw Error("max size");
   } catch (err) {
@@ -19,15 +20,11 @@ module.exports.uploadProfil = async (req, res) => {
     return res.status(201).json({ errors });
   }
   const fileName = req.body.name + ".jpg";
+ 
 
-  await pipeline(
-    req.file.stream,
-    fs.createWriteStream(
-      `${__dirname}/../Client/Public/uploads/profil/${fileName}`
-    )
-  );
+  await pipeline(req.file.stream, fs.createWriteStream(`${__dirname}/../../Foto/Public/uploads/profil/${fileName}`));
 
- try {
+  try {
     await UserModel.findByIdAndUpdate(
       req.body.userId,
       { $set : {picture: "./uploads/profil/" + fileName}},
@@ -41,4 +38,3 @@ module.exports.uploadProfil = async (req, res) => {
     return res.status(500).send({ message: err });
   }
 };
-

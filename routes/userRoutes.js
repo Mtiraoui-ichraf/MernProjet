@@ -23,7 +23,7 @@ router.patch("/unfollow/:id", userController.unfollow);
 
 // upload
 
-router.post("/upload", upload.single("file"), uploadController.uploadProfil);
+router.post("/upload", upload.single('file'), uploadController.uploadProfil);
 
 
-module.exports = router;
+module.exports = router; 
